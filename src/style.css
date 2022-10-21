@@ -1,0 +1,81 @@
+body {
+    margin: 0px;
+}
+
+#page {
+    min-height: 100vh;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+}
+
+#header {
+    background-color: rgb(42, 46, 69);
+    color: white;
+    font-size: 40px;
+    font-weight: 500;
+    padding: 20px 0px 20px 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+#content-wrapper {
+    display: flex;
+}
+
+#menu {
+    background-color: rgb(219, 211, 205);
+    min-width: 200px;
+    min-height: 83vh;
+    padding: 20px 20px 0px 20px;
+}
+
+#buttons-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#projects-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 20px;
+}
+
+#content {
+    background-color: rgb(255, 255, 255);
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    background-color: rgb(42, 46, 69);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 0px;
+}
+
+.button-icon-wrapper {
+    background-color: rgb(219, 211, 205);
+    border: none;
+    padding: 10px 20px 10px 10px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.button-icon-wrapper:hover {
+    background-color: rgb(222, 198, 181);
+}
+
+
+h2 {
+    font-size: 22px;
+}
