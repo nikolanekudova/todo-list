@@ -42,9 +42,12 @@ body {
     padding-top: 20px;
 }
 
-#content {
+#page-content-wrapper {
     background-color: rgb(255, 255, 255);
+    padding-left: 100px;
+    width: 60vw;
 }
+
 
 #footer {
     position: absolute;
@@ -73,9 +76,91 @@ body {
 
 .button-icon-wrapper:hover {
     background-color: rgb(222, 198, 181);
+    cursor: pointer;
+}
+
+.button-icon-wrapper-checked {
+    background-color: rgb(222, 198, 181);
+    border: none;
+    padding: 10px 20px 10px 10px;
+    text-align: left;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 
 h2 {
     font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.project-input {
+    width: 200px;
+    padding: 8px 15px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+.add-project {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#btn-add-project {
+    visibility: visible;
+    padding-top: 10px;
+}
+
+#btn-add-project-dom, #btn-cancel-add-project-dom {
+    background-color: rgb(222, 198, 181);
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    max-width: 100px;
+    font-weight: 600;
+    justify-content: center;
+}
+
+#btn-add-project-dom:hover {
+    background-color: rgb(156, 195, 124);
+    cursor: pointer;
+}
+
+#btn-cancel-add-project-dom:hover {
+    background-color: rgb(225, 143, 143);
+    cursor: pointer;
+}
+
+#btns-add-project-dom {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-add-task {
+    width: 100%;
+    background-color: rgb(219, 211, 205);
+    height: 40px;
+    display: flex;
+    gap: 10px;
+    justify-content: left;
+    align-items: center;
+    padding-left: 10px;
+    border-radius: 10px;
+}
+
+.btn-add-task:hover {
+    background-color: rgb(222, 198, 181);
+    cursor: pointer;
 }

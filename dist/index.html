@@ -15,29 +15,31 @@
         <div id="content-wrapper">
             <div id="menu">
                 <div id="buttons-wrapper">
-                    <div class="button-icon-wrapper">
+                    <div class="button-icon-wrapper" id="inbox-div">
                         <i class="fa-solid fa-inbox"></i>
                         <div id="btn-inbox">Inbox</div>
                     </div>
-                    <div class="button-icon-wrapper">
+                    <div class="button-icon-wrapper" id="today-div">
                         <i class="fa-solid fa-calendar-day"></i>
                         <div id="btn-today">Today</div>
                     </div>
-                    <div class="button-icon-wrapper">
+                    <div class="button-icon-wrapper" id="oncoming-div">
                         <i class="fa-solid fa-calendar-week"></i>
                         <div id="btn-oncoming">Oncoming</div>
                     </div>
                 </div>
                 <div id="projects-wrapper">
                     <h2>Projects</h2>
-                    <div class="button-icon-wrapper">
+                    <div id="projects-list"></div>
+                    <div class="button-icon-wrapper" id="btn-add-project">
                         <i class="fa-solid fa-plus"></i>
-                        <div id="btn-add-project">Add project</div>
+                        <div>Add project</div>
                     </div>
                 </div>
             </div>
-            <div id="content">
-                page content
+            <div id="page-content-wrapper">
+                <h1 id="content-header"></h1>
+                <div id="content"></div>
             </div>
         </div>
         <div id="footer">
