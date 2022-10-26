@@ -5,13 +5,6 @@ addProjectButton.addEventListener("click", showInputAddProject);
 
 generateInputAddProject();
 
-function showInputAddProject() {
-    const addProjectDiv = document.getElementById("add-project");
-
-    addProjectDiv.style.display = "block";
-    addProjectButton.style.display = "none";
-}
-
 export function generateInputAddProject() {
     const projectsDiv = document.getElementById("projects-wrapper");
 
@@ -34,21 +27,26 @@ export function generateInputAddProject() {
     buttonAddProject.setAttribute("id", "btn-add-project-dom");
     buttonsDiv.appendChild(buttonAddProject);
 
-    buttonAddProject.addEventListener("click", addNewProject);
-
     const buttonCancelAddProject = document.createElement("button");
     buttonCancelAddProject.innerHTML = "Cancel";
     buttonCancelAddProject.setAttribute("id", "btn-cancel-add-project-dom");
     buttonsDiv.appendChild(buttonCancelAddProject);
 
+    buttonAddProject.addEventListener("click", addNewProject);
     buttonCancelAddProject.addEventListener("click", cancelAddingProject);
-
     // klávesa enter > nový projekt
     addProjectInput.addEventListener("keyup", function (event) {
         if (event.code === 'Enter') {
             addNewProject();
         }
     });
+}
+
+function showInputAddProject() {
+    const addProjectDiv = document.getElementById("add-project");
+
+    addProjectDiv.style.display = "block";
+    addProjectButton.style.display = "none";
 }
 
 function addNewProject() {

@@ -6,7 +6,7 @@ import '@fortawesome/fontawesome-free/js/brands'
 
 import {myProjects} from "./addProject";
 
-import addProject from "./addProject";
+import generateInboxPageHeader from "./addProject";
 import showInbox from "./inbox"
 
-console.log("working");
+//console.log("working");

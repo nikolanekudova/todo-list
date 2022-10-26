@@ -197,7 +197,7 @@ h2 {
     justify-content: center;
 }
 
-.task-input {
+#task-input {
     width: 100%;
     padding: 8px 15px;
     margin: 8px 0;

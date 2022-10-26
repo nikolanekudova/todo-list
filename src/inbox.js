@@ -1,10 +1,7 @@
-const header = document.getElementById("content-header");
-const pageContent = document.getElementById("content");
-const buttonInbox = document.getElementById("inbox-div");
-
 export let myToDoList = [{ id: 0, project: "inbox", title: "vzorový task", description: "vzorový description", dueDate: undefined, priority: undefined }];
 
-buttonInbox.addEventListener("click", showInbox);
+const buttonInbox = document.getElementById("inbox-div");
+//buttonInbox.addEventListener("click", showInbox);
 
 function Task(id, project, title, description, dueDate, priority) {
     this.id = id;
@@ -15,15 +12,34 @@ function Task(id, project, title, description, dueDate, priority) {
     this.priority = priority;
 }
 
+generateInboxPageHeader();
+generateTasksWrapperDiv();
+generateButtonAddNewTask();
+//generateNewTaskInput();
+
 showTasks();
-showInbox();
+setButtonInMenuActive(buttonInbox);
 
-export function showInbox() {
-    // "zakliknutí" v menu
-    buttonInbox.setAttribute("class", "button-icon-wrapper-checked");
+function setButtonInMenuActive(activePage) {
+    activePage.setAttribute("class", "button-icon-wrapper-checked");
+}
 
-    // vygeneruje inbox stránku
+export function generateInboxPageHeader() {
+    const header = document.getElementById("content-header");
+
     header.innerHTML = "Inbox";
+}
+
+function generateTasksWrapperDiv() {
+    const pageContent = document.getElementById("content");
+
+    const tasksWrapperDiv = document.createElement("div");
+    tasksWrapperDiv.setAttribute("id", "tasks-wrapper");
+    pageContent.appendChild(tasksWrapperDiv);
+}
+
+function generateButtonAddNewTask() {
+    const pageContent = document.getElementById("content");
 
     const buttonAddTask = document.createElement("div");
     buttonAddTask.setAttribute("id", "btn-add-task");
@@ -37,102 +53,96 @@ export function showInbox() {
     textButtonAddTask.innerHTML = "Add Task";
     buttonAddTask.appendChild(textButtonAddTask);
 
+    generateNewTaskInput();
 
-    buttonAddTask.addEventListener("click", function addNewTask() {
+    buttonAddTask.addEventListener("click", showInputAddNewTask);
+}
 
-        buttonAddTask.style.visibility = "hidden";
-        buttonAddTask.style.display = "none";
+function generateNewTaskInput() {
+    const pageContent = document.getElementById("content");
 
-        // vytvoří div, input, div, 2x button pro přidání nového tasku
-        const addTaskDiv = document.createElement("div");
-        addTaskDiv.setAttribute("class", "add-task");
-        pageContent.appendChild(addTaskDiv);
+    // vytvoří div, input, div, 2x button pro přidání nového tasku
+    const addTaskDiv = document.createElement("div");
+    addTaskDiv.setAttribute("id", "add-task");
+    addTaskDiv.style.display = "none";
+    pageContent.appendChild(addTaskDiv);
 
-        const addTaskInput = document.createElement("input");
-        addTaskInput.setAttribute("type", "text");
-        addTaskInput.setAttribute("class", "task-input");
-        addTaskDiv.appendChild(addTaskInput);
+    const addTaskInput = document.createElement("input");
+    addTaskInput.setAttribute("type", "text");
+    addTaskInput.setAttribute("id", "task-input");
+    addTaskDiv.appendChild(addTaskInput);
 
-        const buttonsTaskDiv = document.createElement("div");
-        buttonsTaskDiv.setAttribute("id", "btns-add-task-dom");
-        addTaskDiv.appendChild(buttonsTaskDiv);
+    const buttonsTaskDiv = document.createElement("div");
+    buttonsTaskDiv.setAttribute("id", "btns-add-task-dom");
+    addTaskDiv.appendChild(buttonsTaskDiv);
 
-        const buttonAddTaskDiv = document.createElement("button");
-        buttonAddTaskDiv.innerHTML = "Add";
-        buttonAddTaskDiv.setAttribute("id", "btn-add-task-dom");
-        buttonsTaskDiv.appendChild(buttonAddTaskDiv);
+    const buttonAddTaskDiv = document.createElement("button");
+    buttonAddTaskDiv.innerHTML = "Add";
+    buttonAddTaskDiv.setAttribute("id", "btn-add-task-dom");
+    buttonsTaskDiv.appendChild(buttonAddTaskDiv);
 
-        const buttonCancelAddTask = document.createElement("button");
-        buttonCancelAddTask.innerHTML = "Cancel";
-        buttonCancelAddTask.setAttribute("id", "btn-cancel-add-task-dom");
-        buttonsTaskDiv.appendChild(buttonCancelAddTask);
+    const buttonCancelAddTask = document.createElement("button");
+    buttonCancelAddTask.innerHTML = "Cancel";
+    buttonCancelAddTask.setAttribute("id", "btn-cancel-add-task-dom");
+    buttonsTaskDiv.appendChild(buttonCancelAddTask);
 
+    buttonAddTaskDiv.addEventListener("click", addNewTask);
+    buttonCancelAddTask.addEventListener("click", cancelAddingTask)
 
-        buttonAddTaskDiv.addEventListener("click", function addNewTask() {
-            let titleName = addTaskInput.value;
-            let index = Math.floor(Math.random() * 1000);
+    addTaskInput.addEventListener("keyup", function (event) {
+        if (event.code === 'Enter') {
+            addNewTask();
+        }
+    });
+}
 
-            // id, project, title, description, dueDate, priority
-            let task = new Task(index, "inbox", titleName);
-            myToDoList.push(task);
+function cancelAddingTask() {
+    const addTaskDiv = document.getElementById("add-task");
+    const buttonAddTask = document.getElementById("btn-add-task");
 
-            addTaskInput.value = "";
+    addTaskDiv.style.display = "none";
+    buttonAddTask.style.display = "flex";
+}
 
-            deleteTasksInDiv();
-            showTasks();
+function addNewTask() {
+    const addTaskInput = document.getElementById("task-input");
+    const buttonCancelAddTask = document.getElementById("btn-cancel-add-task-dom");
 
-            // zmáčne za mě klávesu "cancel"
-            buttonCancelAddTask.click();
-        })
+    let titleName = addTaskInput.value;
+    let index = Math.floor(Math.random() * 1000);
 
-        // všechno delete?
-        buttonCancelAddTask.addEventListener("click", function cancelAddingTask() {
-            buttonAddTask.style.visibility = "visible";
-            buttonAddTask.style.display = "";
+    let task = new Task(index, "inbox", titleName);
+    myToDoList.push(task);
 
-            addTaskDiv.style.visibility = "hidden";
-            addTaskDiv.style.display = "none";
+    addTaskInput.value = "";
 
-            buttonsTaskDiv.style.visibility = "hidden";
-            buttonsTaskDiv.style.display = "none";
-        })
+    deleteTasksInDiv();
+    showTasks();
 
-        // duplicita??
-        addTaskInput.addEventListener("keyup", function (event) {
-            if (event.code === 'Enter') {
-                let titleName = addTaskInput.value;
-                let index = Math.floor(Math.random() * 1000);
+    // zmáčne za mě klávesu "cancel"
+    buttonCancelAddTask.click();
+}
 
-                // id, project, title, description, dueDate, priority
-                let task = new Task(index, "inbox", titleName);
-                myToDoList.push(task);
+function showInputAddNewTask() {
+    const addTaskDiv = document.getElementById("add-task");
 
-                addTaskInput.value = "";
+    addTaskDiv.style.display = "block";
+    hideButtonAddNewTask();
+}
 
-                deleteTasksInDiv();
-                showTasks();
+function hideButtonAddNewTask() {
+    const buttonAddTask = document.getElementById("btn-add-task");
 
-                // zmáčne za mě klávesu "cancel"
-                buttonCancelAddTask.click();
-            }
-        });
-
-
-    })
+    buttonAddTask.style.display = "none";
 }
 
 function showTasks() {
-    console.log(myToDoList);
-
-    const divForAllTasks = document.createElement("div");
-    divForAllTasks.setAttribute("class", "tasks-wrapper")
-    pageContent.appendChild(divForAllTasks);
+    const tasksWrapperDiv = document.getElementById("tasks-wrapper");
 
     for (let i = 0; i < myToDoList.length; i++) {
-
         const divForTask = document.createElement("div");
         divForTask.setAttribute("class", "task-wrapper")
-        divForAllTasks.appendChild(divForTask);
+        tasksWrapperDiv.appendChild(divForTask);
 
         const divForLeftSideOfTask = document.createElement("div");
         divForLeftSideOfTask.setAttribute("class", "left-task-wrapper")
@@ -150,7 +160,6 @@ function showTasks() {
         titleOfTask.innerHTML = myToDoList[i].title;
         divForLeftSideOfTask.appendChild(titleOfTask);
 
-
         // nahradit input divem s textem "no due date" > když kliknu, nahradí mi div inputem, jakmile dám datum, tak mi vrátí div
         // s innerhtml hodnotou datumu
         const dateOfTask = document.createElement("input");
@@ -159,16 +168,9 @@ function showTasks() {
         divForRightSideOfTask.appendChild(dateOfTask);
 
         // prochází array
-
-        console.log(myToDoList[i]);
     }
 }
 
 function deleteTasksInDiv() {
-    const divForAllTasks = document.querySelectorAll('.tasks-wrapper');
-
-    divForAllTasks.forEach(task => {
-        task.remove();
-    });
+    document.querySelectorAll(".task-wrapper").forEach(task => task.remove());
 }
-
