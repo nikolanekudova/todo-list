@@ -90,6 +90,7 @@ body {
     display: flex;
     align-items: center;
     gap: 15px;
+    cursor: pointer;
 }
 
 
@@ -227,4 +228,12 @@ h2 {
     align-items: center;
     gap: 10px;
     padding: 15px 10px;
+}
+
+.div-date-task {
+    cursor: pointer;
+}
+
+.left-task-wrapper i, .left-task-wrapper svg {
+    cursor: pointer;
 }

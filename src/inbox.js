@@ -1,7 +1,6 @@
-export let myToDoList = [{ id: 0, project: "inbox", title: "vzorový task", description: "vzorový description", dueDate: undefined, priority: undefined }];
+export let myToDoList = [{ id: 0, project: "inbox", title: "Wash the dishes", description: "description", dueDate: "2022-12-24", priority: undefined }];
 
 const buttonInbox = document.getElementById("inbox-div");
-//buttonInbox.addEventListener("click", showInbox);
 
 function Task(id, project, title, description, dueDate, priority) {
     this.id = id;
@@ -12,15 +11,27 @@ function Task(id, project, title, description, dueDate, priority) {
     this.priority = priority;
 }
 
-generateInboxPageHeader();
-generateTasksWrapperDiv();
-generateButtonAddNewTask();
-//generateNewTaskInput();
+buttonInbox.addEventListener("click", generateInboxPage);
 
-showTasks();
-setButtonInMenuActive(buttonInbox);
+function generateInboxPage() {
+    deletePage();
 
-function setButtonInMenuActive(activePage) {
+    setButtonInMenuActive(buttonInbox);
+    generateInboxPageHeader();
+    generateTasksWrapperDiv();
+    generateButtonAddNewTask();
+    generateTasksToDiv();
+}
+
+function deletePage() {
+    const pageContent = document.getElementById("content");
+
+    while (pageContent.firstChild) {
+        pageContent.removeChild(pageContent.firstChild);
+    }
+}
+
+export function setButtonInMenuActive(activePage) {
     activePage.setAttribute("class", "button-icon-wrapper-checked");
 }
 
@@ -89,6 +100,7 @@ function generateNewTaskInput() {
     buttonAddTaskDiv.addEventListener("click", addNewTask);
     buttonCancelAddTask.addEventListener("click", cancelAddingTask)
 
+    // add new task with "enter" key
     addTaskInput.addEventListener("keyup", function (event) {
         if (event.code === 'Enter') {
             addNewTask();
@@ -106,7 +118,6 @@ function cancelAddingTask() {
 
 function addNewTask() {
     const addTaskInput = document.getElementById("task-input");
-    const buttonCancelAddTask = document.getElementById("btn-cancel-add-task-dom");
 
     let titleName = addTaskInput.value;
     let index = Math.floor(Math.random() * 1000);
@@ -117,10 +128,8 @@ function addNewTask() {
     addTaskInput.value = "";
 
     deleteTasksInDiv();
-    showTasks();
-
-    // zmáčne za mě klávesu "cancel"
-    buttonCancelAddTask.click();
+    generateTasksToDiv();
+    cancelAddingTask();
 }
 
 function showInputAddNewTask() {
@@ -136,12 +145,16 @@ function hideButtonAddNewTask() {
     buttonAddTask.style.display = "none";
 }
 
-function showTasks() {
+// for every task generate div
+function generateTasksToDiv() {
     const tasksWrapperDiv = document.getElementById("tasks-wrapper");
 
     for (let i = 0; i < myToDoList.length; i++) {
         const divForTask = document.createElement("div");
         divForTask.setAttribute("class", "task-wrapper")
+
+        // id kvůli odebrání (jak jinak zjistit id objektu?)
+        divForTask.setAttribute("id", myToDoList[i].id);
         tasksWrapperDiv.appendChild(divForTask);
 
         const divForLeftSideOfTask = document.createElement("div");
@@ -152,25 +165,91 @@ function showTasks() {
         divForRightSideOfTask.setAttribute("class", "right-task-wrapper")
         divForTask.appendChild(divForRightSideOfTask);
 
+        const divForIcon = document.createElement("div");
+        divForIcon.setAttribute("class", "icon-circle-wrapper");
+        divForLeftSideOfTask.appendChild(divForIcon);
+
+        divForIcon.addEventListener("click", function deleteTaskFromTodolist(event) {
+            let taskToDelete = event.target.parentElement.parentElement.parentElement.id;
+
+            for (let j = 0; j < myToDoList.length; j++) {
+                if (myToDoList[j].id == taskToDelete) {
+                    myToDoList = myToDoList.filter(task => task.id != taskToDelete);
+                }
+            }
+            deleteTasksInDiv();
+            generateTasksToDiv();
+        })
+
         const iconTask = document.createElement("i");
         iconTask.setAttribute("class", "fa-regular fa-circle fa-xl");
-        divForLeftSideOfTask.appendChild(iconTask);
+        divForIcon.appendChild(iconTask);
 
         const titleOfTask = document.createElement("div");
-        titleOfTask.innerHTML = myToDoList[i].title;
         divForLeftSideOfTask.appendChild(titleOfTask);
+        titleOfTask.innerHTML = myToDoList[i].title;
 
-        // nahradit input divem s textem "no due date" > když kliknu, nahradí mi div inputem, jakmile dám datum, tak mi vrátí div
-        // s innerhtml hodnotou datumu
-        const dateOfTask = document.createElement("input");
-        dateOfTask.setAttribute("type", "date");
-        dateOfTask.setAttribute("class", "task-date-input");
-        divForRightSideOfTask.appendChild(dateOfTask);
+        const divDateOfTask = document.createElement("div");
+        divDateOfTask.setAttribute("class", "div-date-task");
 
-        // prochází array
+        if (myToDoList[i].dueDate === undefined) {
+            divDateOfTask.innerHTML = "No due date";
+        } else {
+            divDateOfTask.innerHTML = myToDoList[i].dueDate; // when "duedate" is undefinied, show "no due date"
+        }
+
+        divForRightSideOfTask.appendChild(divDateOfTask);
+
+        const inputDateOfTask = document.createElement("input");
+        inputDateOfTask.setAttribute("type", "date");
+        inputDateOfTask.setAttribute("class", "task-date-input");
+        inputDateOfTask.style.display = "none";
+        divForRightSideOfTask.appendChild(inputDateOfTask);
+
+        // show input for date
+        divDateOfTask.addEventListener("click", function showDateInput() {
+
+            divDateOfTask.style.display = "none";
+            inputDateOfTask.style.display = "block";
+
+            if (myToDoList[i].dueDate === undefined) {
+                divDateOfTask.style.display = "none";
+                inputDateOfTask.style.display = "block";
+            } else {
+                divDateOfTask.innerHTML = myToDoList[i].dueDate;
+            }
+        });
+
+        // add due date to mytodolist and show due date
+        inputDateOfTask.addEventListener("focusout", function () {
+            myToDoList[i].dueDate = inputDateOfTask.value
+
+            divDateOfTask.style.display = "block";
+            inputDateOfTask.style.display = "none";
+
+            divDateOfTask.innerHTML = myToDoList[i].dueDate;
+
+            //console.log(myToDoList);
+        })
+
     }
 }
 
 function deleteTasksInDiv() {
     document.querySelectorAll(".task-wrapper").forEach(task => task.remove());
 }
+
+
+/* function showDateInput(duedate) {
+    divDateOfTask.style.display = "none";
+    inputDateOfTask.style.display = "block";
+
+    if(duedate === undefined) {
+        divDateOfTask.style.display = "none";
+        inputDateOfTask.style.display = "block";
+
+        console.log(inputDateOfTask.value);
+    } else {
+        divDateOfTask.innerHTML = myToDoList[i].dueDate;
+    }
+} */
