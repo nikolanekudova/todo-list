@@ -12,6 +12,7 @@ function Task(id, project, title, description, dueDate, priority) {
 }
 
 buttonInbox.addEventListener("click", generateInboxPage);
+buttonInbox.click();
 
 function generateInboxPage() {
     deletePage();
