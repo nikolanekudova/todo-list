@@ -1,9 +1,14 @@
-import { myToDoList } from "./inbox";
-import { setButtonInMenuActive, deletePage, generateInboxPageHeader, 
-    unsetButtonsInMenuActive, generateTasksWrapperDiv, generateToDo } from "./inbox";
+import { myToDoList, setButtonInMenuActive, deletePage, generateInboxPageHeader, 
+    unsetButtonsInMenuActive, generateTasksWrapperDiv, setPage, renderTasks } from "./inbox";
+
 
 const buttonToday = document.getElementById("today-div");
-buttonToday.addEventListener("click", generateTodayPage);
+//buttonToday.addEventListener("click", generateTodayPage);
+
+buttonToday.addEventListener("click", function() {
+    setPage("Today");
+    generateTodayPage();
+})
 
 function generateTodayPage() {
     const buttonToday = document.getElementById("today-div");
@@ -11,13 +16,13 @@ function generateTodayPage() {
     unsetButtonsInMenuActive();
     setButtonInMenuActive(buttonToday);
     deletePage();
-    generateInboxPageHeader("Today");
+    generateInboxPageHeader();
     generateTasksWrapperDiv();
-    generateTasksToDiv();
-
+    //generateTasksToDiv();
+    renderTasks();
     // spustit funkci generování tasků do divu po změně data!
 }
-
+/* 
 function generateTasksToDiv() {
     for (let i = 0; i < myToDoList.length; i++) {
         let dateOfTask = myToDoList[i].dueDate;
@@ -34,4 +39,4 @@ function generateTasksToDiv() {
             generateToDo(myToDoIndex);
         }
     }
-}
+} */

@@ -1,4 +1,12 @@
-export let myToDoList = [{ id: 0, project: "inbox", title: "Wash the dishes", description: "description", dueDate: "2022-10-30", priority: undefined }];
+export let myToDoList = [{ id: 0, project: "inbox", title: "Wash the dishes", description: "description", dueDate: "2022-11-11", priority: undefined }];
+
+export var page = "";
+export let projectName = "";
+export let filteredMyToDoList = [];
+
+export function setPage(pageName) {
+    page = pageName;
+}
 
 const buttonInbox = document.getElementById("inbox-div");
 
@@ -11,7 +19,11 @@ function Task(id, project, title, description, dueDate, priority) {
     this.priority = priority;
 }
 
-buttonInbox.addEventListener("click", generateInboxPage);
+//buttonInbox.addEventListener("click", generateInboxPage);
+buttonInbox.addEventListener("click", function() {
+    setPage("Inbox");
+    generateInboxPage();
+})
 buttonInbox.click();
 
 function generateInboxPage() {
@@ -19,10 +31,102 @@ function generateInboxPage() {
 
     unsetButtonsInMenuActive();
     setButtonInMenuActive(buttonInbox);
-    generateInboxPageHeader("Inbox");
+    generateInboxPageHeader();
     generateTasksWrapperDiv();
     generateButtonAddNewTask();
-    generateTasksToDiv();
+    //generateTasksToDiv();
+    renderTasks();
+}
+
+export function renderTasks() {
+    console.log(page);
+
+    getTasksByState();
+    generateTasksToPage();
+}
+
+export function getTodaysDate() {
+    const date = new Date();
+    let currentDay = date.getDate();
+    let currentMonth = date.getMonth() + 1;
+    let currentYear = date.getFullYear();
+    let currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
+
+    return currentDate;
+}
+
+export function getTasksByState() {
+    if (page == "Inbox") {
+        filteredMyToDoList = myToDoList.filter( todo => todo.project == "inbox");
+        console.log(filteredMyToDoList);
+    } else if (page == "Today") {
+        const currentDate = getTodaysDate();
+        console.log(currentDate);
+
+        filteredMyToDoList = myToDoList.filter( todo => todo.dueDate == currentDate);
+        console.log(filteredMyToDoList);
+    } else if (page == "Oncoming") {
+        const currentDate = getTodaysDate();
+        console.log(currentDate);
+
+        filteredMyToDoList = myToDoList.filter( todo => todo.dueDate >= currentDate);
+        console.log(filteredMyToDoList);
+    }
+}
+
+function generateTasksToPage() {
+    for (let i = 0; i < filteredMyToDoList.length; i++) {
+        let myToDoIndex = filteredMyToDoList[i];
+
+        const tasksWrapperDiv = document.getElementById("tasks-wrapper");
+
+        const divForTask = document.createElement("div");
+        divForTask.setAttribute("class", "task-wrapper")
+    
+        // id kvůli odebrání (jak jinak zjistit id objektu?)
+        divForTask.setAttribute("id", myToDoIndex.id);
+        tasksWrapperDiv.appendChild(divForTask);
+    
+        const divForLeftSideOfTask = document.createElement("div");
+        divForLeftSideOfTask.setAttribute("class", "left-task-wrapper")
+        divForTask.appendChild(divForLeftSideOfTask);
+    
+        const divForRightSideOfTask = document.createElement("div");
+        divForRightSideOfTask.setAttribute("class", "right-task-wrapper")
+        divForTask.appendChild(divForRightSideOfTask);
+    
+        const divForIcon = document.createElement("div");
+        divForIcon.setAttribute("class", "icon-circle-wrapper");
+        divForLeftSideOfTask.appendChild(divForIcon);
+    
+        const iconTask = document.createElement("i");
+        iconTask.setAttribute("class", "fa-regular fa-circle fa-xl");
+        divForIcon.appendChild(iconTask);
+    
+        const titleOfTask = document.createElement("div");
+        divForLeftSideOfTask.appendChild(titleOfTask);
+        titleOfTask.innerHTML = myToDoIndex.title;
+    
+        const divDateOfTask = document.createElement("div");
+        divDateOfTask.setAttribute("class", "div-date-task");
+        divForRightSideOfTask.appendChild(divDateOfTask);
+    
+        if (myToDoIndex.dueDate === undefined) {
+            divDateOfTask.innerHTML = "No due date";
+        } else {
+            divDateOfTask.innerHTML = myToDoIndex.dueDate; // when "duedate" is undefinied, show "no due date"
+        }
+    
+        const inputDateOfTask = document.createElement("input");
+        inputDateOfTask.setAttribute("type", "date");
+        inputDateOfTask.setAttribute("class", "task-date-input");
+        inputDateOfTask.style.display = "none";
+        divForRightSideOfTask.appendChild(inputDateOfTask);
+    
+        inputDateOfTask.addEventListener("focusout", inputFocusOut)
+        divForIcon.addEventListener("click", deleteTaskFromTodolist);
+        divDateOfTask.addEventListener("click", showDateInput);
+    }
 }
 
 export function deletePage() {
@@ -47,10 +151,10 @@ export function unsetButtonsInMenuActive() {
     })
 }
 
-export function generateInboxPageHeader(headerName) {
+export function generateInboxPageHeader() {
     const header = document.getElementById("content-header");
 
-    header.innerHTML = headerName;
+    header.innerHTML = page;
 }
 
 export function generateTasksWrapperDiv() {
@@ -140,7 +244,8 @@ function addNewTask() {
     addTaskInput.value = "";
 
     deleteTasksInDiv();
-    generateTasksToDiv();
+    //generateTasksToDiv();
+    renderTasks();
     cancelAddingTask();
 }
 
@@ -158,8 +263,9 @@ function hideButtonAddNewTask() {
 }
 
 
+
 // for every task generate div
-function generateTasksToDiv() {
+/* function generateTasksToDiv() {
     for (let i = 0; i < myToDoList.length; i++) {
 
         if (myToDoList[i].project == "inbox") {
@@ -168,7 +274,7 @@ function generateTasksToDiv() {
             generateToDo(myToDoIndex);
         }
     }
-}
+} */
 
 export function generateToDo(myToDoIndex) {
     const tasksWrapperDiv = document.getElementById("tasks-wrapper");
@@ -250,7 +356,8 @@ function deleteTaskFromTodolist(event) {
         }
     }
     deleteTasksInDiv();
-    generateTasksToDiv();
+    //generateTasksToDiv();
+    renderTasks();
 }
 
 // get value from input and push it to object
@@ -275,7 +382,8 @@ function inputFocusOut(event) {
 
     console.log(myToDoList);
     deleteTasksInDiv();
-    generateTasksToDiv();
+    //generateTasksToDiv();
+    renderTasks();
 }
 
 function deleteTasksInDiv() {
