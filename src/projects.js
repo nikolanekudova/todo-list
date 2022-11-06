@@ -1,8 +1,11 @@
-export let myProjects = [];
+export let myProjects = ["Home"];
+import { myToDoList, setButtonInMenuActive, deletePage, generatePageHeader, 
+    unsetButtonsInMenuActive, generateTasksWrapperDiv, setPage, renderTasks, generateButtonAddNewTask, deleteToDoWithProject } from "./inbox";
 
 const addProjectButton = document.getElementById("btn-add-project");
 addProjectButton.addEventListener("click", showInputAddProject);
 
+showProjectsInMenu();
 generateInputAddProject();
 
 export function generateInputAddProject() {
@@ -64,6 +67,7 @@ function addNewProject() {
     addNewProjectInputWrapper.style.display = "none";
 }
 
+
 function cancelAddingProject() {
     const addProjectDiv = document.getElementById("add-project");
 
@@ -75,19 +79,60 @@ function showProjectsInMenu() {
     const projectsListDiv = document.getElementById("projects-list");
 
     for (let i = 0; i < myProjects.length; i++) {
+        let idForProject = myProjects[i];
+
         const divForProject = document.createElement("div");
-        divForProject.setAttribute("class", "button-icon-wrapper")
+        divForProject.setAttribute("class", "button-icon-wrapper");
+        divForProject.classList.add("project-wrapper")
+        divForProject.setAttribute("id", idForProject);
         projectsListDiv.appendChild(divForProject);
+
+        const divForRightSideOfProject = document.createElement("div");
+        divForRightSideOfProject.setAttribute("class", "right-side-project");
+        divForProject.appendChild(divForRightSideOfProject);
 
         const iconProject = document.createElement("i");
         iconProject.setAttribute("class", "fa-solid fa-list-check");
-        divForProject.appendChild(iconProject);
+        divForRightSideOfProject.appendChild(iconProject);
 
         const nameOfProject = document.createElement("div");
         nameOfProject.innerHTML = myProjects[i];
-        divForProject.appendChild(nameOfProject);
+        divForRightSideOfProject.appendChild(nameOfProject);
+
+        const divForLeftSideOfProject = document.createElement("div");
+        divForLeftSideOfProject.setAttribute("class", "left-side-project");
+        divForProject.appendChild(divForLeftSideOfProject);
+
+        const iconProjectDelete = document.createElement("i");
+        iconProjectDelete.setAttribute("class", "fa-solid fa-trash");
+        iconProjectDelete.classList.add("icon-project-delete");
+        divForLeftSideOfProject.appendChild(iconProjectDelete);
+
+        divForProject.addEventListener("click", generateProjectPage);
+        divForLeftSideOfProject.addEventListener("click", deleteProject)
     }
 }
+
+function deleteProject(event) {
+    event.stopPropagation();
+    const projectToDelete = event.target.parentElement.parentElement.parentElement.id;
+
+    myProjects = myProjects.filter(project => project != projectToDelete);
+    console.log(myProjects);
+
+    deleteProjectsInMenu();
+    showProjectsInMenu();
+    deleteToDoWithProject(projectToDelete);
+}
+
+
+/* function deleteToDoWithProject(project) {
+    console.log(myToDoList);
+
+    myToDoList = myToDoList.filter(todo => todo.project != project);
+
+    console.log(myToDoList);
+} */
 
 function deleteProjectsInMenu() {
     const projectsListDiv = document.getElementById("projects-list");
@@ -95,4 +140,18 @@ function deleteProjectsInMenu() {
     while (projectsListDiv.firstChild) {
         projectsListDiv.removeChild(projectsListDiv.firstChild);
     }
+}
+
+function generateProjectPage(event) {
+    event.stopPropagation();
+    const selectedProject = event.currentTarget;
+
+    setPage(event.target.id)
+    deletePage();
+    unsetButtonsInMenuActive();
+    setButtonInMenuActive(selectedProject);
+    generatePageHeader();
+    generateTasksWrapperDiv();
+    generateButtonAddNewTask();
+    renderTasks();
 }

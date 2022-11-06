@@ -1,4 +1,19 @@
-export let myToDoList = [{ id: 0, project: "inbox", title: "Wash the dishes", description: "description", dueDate: "2022-11-11", priority: undefined }];
+export let myToDoList = [
+    { 
+        id: 0, 
+        project: "Inbox", 
+        title: "Check e-mails", 
+        dueDate: "2022-11-11", 
+        timeStamp: 1668124800000
+    },
+    { 
+        id: 1, 
+        project: "Home", 
+        title: "Wash the dishes", 
+        dueDate: "2022-11-06", 
+        timeStamp: 1667689200000
+        },
+];
 
 export var page = "";
 export let projectName = "";
@@ -10,16 +25,16 @@ export function setPage(pageName) {
 
 const buttonInbox = document.getElementById("inbox-div");
 
-function Task(id, project, title, description, dueDate, priority) {
+function Task(id, project, title, dueDate, timeStamp) {
     this.id = id;
     this.project = project;
     this.title = title;
-    this.description = description;
     this.dueDate = dueDate;
-    this.priority = priority;
+    this.timeStamp = timeStamp;
+    //this.description = description;
+    //this.priority = priority;
 }
 
-//buttonInbox.addEventListener("click", generateInboxPage);
 buttonInbox.addEventListener("click", function() {
     setPage("Inbox");
     generateInboxPage();
@@ -28,10 +43,9 @@ buttonInbox.click();
 
 function generateInboxPage() {
     deletePage();
-
     unsetButtonsInMenuActive();
     setButtonInMenuActive(buttonInbox);
-    generateInboxPageHeader();
+    generatePageHeader();
     generateTasksWrapperDiv();
     generateButtonAddNewTask();
     //generateTasksToDiv();
@@ -39,15 +53,18 @@ function generateInboxPage() {
 }
 
 export function renderTasks() {
-    console.log(page);
-
     getTasksByState();
     generateTasksToPage();
 }
 
-export function getTodaysDate() {
+function getTodaysDate() {
     const date = new Date();
     let currentDay = date.getDate();
+
+    if (currentDay < 10) {
+        currentDay = "0" + currentDay;
+    }
+
     let currentMonth = date.getMonth() + 1;
     let currentYear = date.getFullYear();
     let currentDate = `${currentYear}-${currentMonth}-${currentDay}`;
@@ -55,22 +72,33 @@ export function getTodaysDate() {
     return currentDate;
 }
 
+function getTodaysTimeStamp() {
+    const date = new Date();
+    let currentDay = date.getDate();
+    let currentMonth = date.getMonth();
+    let currentYear = date.getFullYear();
+
+    let currentDate = new Date(currentYear, currentMonth, currentDay);
+    let currentDateTimeStamp = currentDate.getTime();
+
+    return currentDateTimeStamp;
+}
+
 export function getTasksByState() {
     if (page == "Inbox") {
-        filteredMyToDoList = myToDoList.filter( todo => todo.project == "inbox");
-        console.log(filteredMyToDoList);
+        filteredMyToDoList = myToDoList.filter( todo => todo.project == "Inbox");
     } else if (page == "Today") {
-        const currentDate = getTodaysDate();
-        console.log(currentDate);
+        const currentDate = getTodaysTimeStamp();
 
-        filteredMyToDoList = myToDoList.filter( todo => todo.dueDate == currentDate);
-        console.log(filteredMyToDoList);
+        filteredMyToDoList = myToDoList.filter( todo => todo.timeStamp == currentDate);
     } else if (page == "Oncoming") {
-        const currentDate = getTodaysDate();
-        console.log(currentDate);
+        const currentDate = getTodaysTimeStamp();
 
-        filteredMyToDoList = myToDoList.filter( todo => todo.dueDate >= currentDate);
-        console.log(filteredMyToDoList);
+        filteredMyToDoList = myToDoList.filter( todo => todo.timeStamp >= currentDate);
+    } else {
+        let actualProject = page;
+
+        filteredMyToDoList = myToDoList.filter ( todo => todo.project == actualProject);
     }
 }
 
@@ -87,14 +115,11 @@ function generateTasksToPage() {
         divForTask.setAttribute("id", myToDoIndex.id);
         tasksWrapperDiv.appendChild(divForTask);
     
+        // left side
         const divForLeftSideOfTask = document.createElement("div");
         divForLeftSideOfTask.setAttribute("class", "left-task-wrapper")
         divForTask.appendChild(divForLeftSideOfTask);
-    
-        const divForRightSideOfTask = document.createElement("div");
-        divForRightSideOfTask.setAttribute("class", "right-task-wrapper")
-        divForTask.appendChild(divForRightSideOfTask);
-    
+
         const divForIcon = document.createElement("div");
         divForIcon.setAttribute("class", "icon-circle-wrapper");
         divForLeftSideOfTask.appendChild(divForIcon);
@@ -105,8 +130,19 @@ function generateTasksToPage() {
     
         const titleOfTask = document.createElement("div");
         divForLeftSideOfTask.appendChild(titleOfTask);
-        titleOfTask.innerHTML = myToDoIndex.title;
+        
+        if (page == "Inbox") {
+            titleOfTask.innerHTML = myToDoIndex.title;
+        } else if (page == "Today" || page == "Oncoming") {
+            titleOfTask.innerHTML = myToDoIndex.title + " (" + myToDoIndex.project + ")"
+        } else {
+            titleOfTask.innerHTML = myToDoIndex.title;
+        }
     
+        const divForRightSideOfTask = document.createElement("div");
+        divForRightSideOfTask.setAttribute("class", "right-task-wrapper")
+        divForTask.appendChild(divForRightSideOfTask);
+
         const divDateOfTask = document.createElement("div");
         divDateOfTask.setAttribute("class", "div-date-task");
         divForRightSideOfTask.appendChild(divDateOfTask);
@@ -122,10 +158,33 @@ function generateTasksToPage() {
         inputDateOfTask.setAttribute("class", "task-date-input");
         inputDateOfTask.style.display = "none";
         divForRightSideOfTask.appendChild(inputDateOfTask);
+
+        const divForIconDelete = document.createElement("div");
+        divForIconDelete.setAttribute("class", "div-icon-delete")
+        divForRightSideOfTask.appendChild(divForIconDelete);
+
+        const iconTaskDelete = document.createElement("i");
+        iconTaskDelete.setAttribute("class", "fa-solid fa-trash");
+        divForIconDelete.appendChild(iconTaskDelete);
     
-        inputDateOfTask.addEventListener("focusout", inputFocusOut)
-        divForIcon.addEventListener("click", deleteTaskFromTodolist);
+        inputDateOfTask.addEventListener("focusout", dateInputFocusOut)
+        divForIcon.addEventListener("click", taskIsDone);
         divDateOfTask.addEventListener("click", showDateInput);
+
+        divForTask.addEventListener("mouseover", function(event) {
+            const deleteIcon = event.currentTarget.querySelector(".div-icon-delete");
+            deleteIcon.classList.add("div-icon-delete-visible")
+        })
+
+        divForTask.addEventListener("mouseleave", function(event) {
+            const deleteIcon = event.currentTarget.querySelector(".div-icon-delete");
+            deleteIcon.classList.remove("div-icon-delete-visible")
+        })
+
+        divForIconDelete.addEventListener("click", function(event) {
+            deleteTaskFromTodolist(event);
+            console.log("delete tasks from div");
+        });
     }
 }
 
@@ -151,7 +210,7 @@ export function unsetButtonsInMenuActive() {
     })
 }
 
-export function generateInboxPageHeader() {
+export function generatePageHeader() {
     const header = document.getElementById("content-header");
 
     header.innerHTML = page;
@@ -165,7 +224,7 @@ export function generateTasksWrapperDiv() {
     pageContent.appendChild(tasksWrapperDiv);
 }
 
-function generateButtonAddNewTask() {
+export function generateButtonAddNewTask() {
     const pageContent = document.getElementById("content");
 
     const buttonAddTask = document.createElement("div");
@@ -232,19 +291,28 @@ function cancelAddingTask() {
     buttonAddTask.style.display = "flex";
 }
 
+
+
 function addNewTask() {
     const addTaskInput = document.getElementById("task-input");
 
     let titleName = addTaskInput.value;
     let index = Math.floor(Math.random() * 1000);
 
-    let task = new Task(index, "inbox", titleName);
-    myToDoList.push(task);
+    if (page == "Today") {
+        const today = getTodaysDate();
+        const todaysTimeStamp = getTodaysTimeStamp();
+
+        let task = new Task(index, "Inbox", titleName, today, todaysTimeStamp);
+        myToDoList.push(task);
+    } else {
+        let task = new Task(index, page, titleName);
+        myToDoList.push(task);
+    }
 
     addTaskInput.value = "";
 
     deleteTasksInDiv();
-    //generateTasksToDiv();
     renderTasks();
     cancelAddingTask();
 }
@@ -322,8 +390,8 @@ export function generateToDo(myToDoIndex) {
     inputDateOfTask.style.display = "none";
     divForRightSideOfTask.appendChild(inputDateOfTask);
 
-    inputDateOfTask.addEventListener("focusout", inputFocusOut)
-    divForIcon.addEventListener("click", deleteTaskFromTodolist);
+    inputDateOfTask.addEventListener("focusout", dateInputFocusOut)
+    divForIcon.addEventListener("click", taskIsDone);
     divDateOfTask.addEventListener("click", showDateInput);
 }
 
@@ -346,8 +414,8 @@ function showDateInput(event) {
     }
 };
 
-// add due date to mytodolist and show due date
-function deleteTaskFromTodolist(event) {
+// with icon circle
+function taskIsDone(event) {
     let taskToDelete = event.target.parentElement.parentElement.parentElement.id;
 
     for (let j = 0; j < myToDoList.length; j++) {
@@ -356,12 +424,25 @@ function deleteTaskFromTodolist(event) {
         }
     }
     deleteTasksInDiv();
-    //generateTasksToDiv();
+    renderTasks();
+}
+
+// with icon trash
+function deleteTaskFromTodolist(event) {
+    console.log(event.target.parentElement.parentElement.parentElement.parentElement.id)
+    let taskToDelete = event.target.parentElement.parentElement.parentElement.parentElement.id
+
+    for (let j = 0; j < myToDoList.length; j++) {
+        if (myToDoList[j].id == taskToDelete) {
+            myToDoList = myToDoList.filter(task => task.id != taskToDelete);
+        }
+    }
+    deleteTasksInDiv();
     renderTasks();
 }
 
 // get value from input and push it to object
-function inputFocusOut(event) {
+function dateInputFocusOut(event) {
     const selectedTodoId = event.target.parentElement.parentElement.id;
 
     // wtf
@@ -375,17 +456,26 @@ function inputFocusOut(event) {
 
     selectedTodoObject.dueDate = inputDateOfTask.value;
 
+    // funkce převést datum to timestamp a poslat do objektu
+    let dueDateToSplit = selectedTodoObject.dueDate.split("-");
+    let timeStampOdTask = new Date( dueDateToSplit[0], dueDateToSplit[1] - 1, dueDateToSplit[2]);
+
+    selectedTodoObject.timeStamp = timeStampOdTask.getTime();
+
+
     divDateOfTask.style.display = "block";
     inputDateOfTask.style.display = "none";
 
     divDateOfTask.innerHTML = inputDateOfTask.value;
 
-    console.log(myToDoList);
     deleteTasksInDiv();
-    //generateTasksToDiv();
     renderTasks();
 }
 
 function deleteTasksInDiv() {
     document.querySelectorAll(".task-wrapper").forEach(task => task.remove());
+}
+
+export function deleteToDoWithProject(project) {
+    myToDoList = myToDoList.filter(todo => todo.project != project);
 }

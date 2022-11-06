@@ -83,6 +83,9 @@ body {
     background-color: rgb(222, 198, 181);
 }
 
+ .button-icon-wrapper .right-side-project {
+    pointer-events: none;
+} 
 
 h2 {
     font-size: 22px;
@@ -108,7 +111,8 @@ h2 {
     padding-top: 10px;
 }
 
-#btn-add-project-dom, #btn-cancel-add-project-dom {
+#btn-add-project-dom,
+#btn-cancel-add-project-dom {
     background-color: rgb(222, 198, 181);
     border: none;
     padding: 10px 20px;
@@ -157,7 +161,8 @@ h2 {
     cursor: pointer;
 }
 
-#btn-add-task-dom, #btn-cancel-add-task-dom {
+#btn-add-task-dom,
+#btn-cancel-add-task-dom {
     background-color: rgb(245, 216, 193);
     border: none;
     padding: 10px 20px;
@@ -193,7 +198,7 @@ h2 {
     padding: 8px 15px;
     margin: 8px 0;
     box-sizing: border-box;
-    
+
 }
 
 .task-wrapper {
@@ -224,6 +229,47 @@ h2 {
     cursor: pointer;
 }
 
-.left-task-wrapper i, .left-task-wrapper svg {
+.left-task-wrapper i,
+.left-task-wrapper svg {
     cursor: pointer;
+}
+
+.right-task-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.div-icon-delete {
+    visibility: hidden;
+    cursor: pointer;
+}
+
+.div-icon-delete-visible {
+    visibility: visible;
+}
+
+.right-side-project {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.project-wrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button-icon-wrapper:hover .left-side-project svg {
+    visibility: visible;
+}
+
+.icon-project-delete {
+    visibility: hidden;
+}
+
+#projects-list {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
 }
