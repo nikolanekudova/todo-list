@@ -1,3 +1,5 @@
+import { myProjects } from "./projects";
+
 export let myToDoList = [
     { 
         id: 0, 
@@ -19,11 +21,14 @@ export var page = "";
 export let projectName = "";
 export let filteredMyToDoList = [];
 
-export function setPage(pageName) {
-    page = pageName;
-}
-
 const buttonInbox = document.getElementById("inbox-div");
+buttonInbox.addEventListener("click", function() {
+    setPage("Inbox");
+    generateInboxPage();
+})
+
+dataFromStorage();
+buttonInbox.click();
 
 function Task(id, project, title, dueDate, timeStamp) {
     this.id = id;
@@ -35,11 +40,21 @@ function Task(id, project, title, dueDate, timeStamp) {
     //this.priority = priority;
 }
 
-buttonInbox.addEventListener("click", function() {
-    setPage("Inbox");
-    generateInboxPage();
-})
-buttonInbox.click();
+export function setPage(pageName) {
+    page = pageName;
+}
+
+function dataToStorage() {
+    const myStringToDoList = JSON.stringify(myToDoList);
+
+    localStorage.setItem("toDoList", myStringToDoList);
+}
+
+function dataFromStorage() {
+    const getMyToDoList = localStorage.getItem("toDoList");
+
+    myToDoList = JSON.parse(getMyToDoList);
+}
 
 function generateInboxPage() {
     deletePage();
@@ -48,11 +63,11 @@ function generateInboxPage() {
     generatePageHeader();
     generateTasksWrapperDiv();
     generateButtonAddNewTask();
-    //generateTasksToDiv();
     renderTasks();
 }
 
 export function renderTasks() {
+    dataFromStorage();
     getTasksByState();
     generateTasksToPage();
 }
@@ -197,8 +212,6 @@ export function deletePage() {
 }
 
 export function setButtonInMenuActive(activePage) {
-    //activePage.setAttribute("class", "button-icon-wrapper-checked");
-
     activePage.classList.add("button-icon-wrapper-checked")
 }
 
@@ -309,9 +322,9 @@ function addNewTask() {
         let task = new Task(index, page, titleName);
         myToDoList.push(task);
     }
-
     addTaskInput.value = "";
 
+    dataToStorage();
     deleteTasksInDiv();
     renderTasks();
     cancelAddingTask();
@@ -329,20 +342,6 @@ function hideButtonAddNewTask() {
 
     buttonAddTask.style.display = "none";
 }
-
-
-
-// for every task generate div
-/* function generateTasksToDiv() {
-    for (let i = 0; i < myToDoList.length; i++) {
-
-        if (myToDoList[i].project == "inbox") {
-            let myToDoIndex = myToDoList[i];
-            
-            generateToDo(myToDoIndex);
-        }
-    }
-} */
 
 export function generateToDo(myToDoIndex) {
     const tasksWrapperDiv = document.getElementById("tasks-wrapper");
@@ -423,6 +422,7 @@ function taskIsDone(event) {
             myToDoList = myToDoList.filter(task => task.id != taskToDelete);
         }
     }
+    dataToStorage();
     deleteTasksInDiv();
     renderTasks();
 }
@@ -437,6 +437,7 @@ function deleteTaskFromTodolist(event) {
             myToDoList = myToDoList.filter(task => task.id != taskToDelete);
         }
     }
+    dataToStorage();
     deleteTasksInDiv();
     renderTasks();
 }
@@ -468,6 +469,7 @@ function dateInputFocusOut(event) {
 
     divDateOfTask.innerHTML = inputDateOfTask.value;
 
+    dataToStorage();
     deleteTasksInDiv();
     renderTasks();
 }
@@ -478,4 +480,5 @@ function deleteTasksInDiv() {
 
 export function deleteToDoWithProject(project) {
     myToDoList = myToDoList.filter(todo => todo.project != project);
+    dataToStorage();
 }

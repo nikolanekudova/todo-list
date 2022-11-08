@@ -5,8 +5,21 @@ import { myToDoList, setButtonInMenuActive, deletePage, generatePageHeader,
 const addProjectButton = document.getElementById("btn-add-project");
 addProjectButton.addEventListener("click", showInputAddProject);
 
+projectsFromStorage();
 showProjectsInMenu();
 generateInputAddProject();
+
+function projectsToStorage() {
+    const myStringProjects = JSON.stringify(myProjects);
+
+    localStorage.setItem("projects", myStringProjects);
+}
+
+function projectsFromStorage() {
+    const getMyProjects = localStorage.getItem("projects");
+
+    myProjects = JSON.parse(getMyProjects);
+}
 
 export function generateInputAddProject() {
     const projectsDiv = document.getElementById("projects-wrapper");
@@ -60,6 +73,7 @@ function addNewProject() {
     myProjects.push(addProjectInput.value);
     addProjectInput.value = "";
 
+    projectsToStorage();
     deleteProjectsInMenu();
     showProjectsInMenu();
 
@@ -120,19 +134,11 @@ function deleteProject(event) {
     myProjects = myProjects.filter(project => project != projectToDelete);
     console.log(myProjects);
 
+    projectsToStorage();
     deleteProjectsInMenu();
     showProjectsInMenu();
     deleteToDoWithProject(projectToDelete);
 }
-
-
-/* function deleteToDoWithProject(project) {
-    console.log(myToDoList);
-
-    myToDoList = myToDoList.filter(todo => todo.project != project);
-
-    console.log(myToDoList);
-} */
 
 function deleteProjectsInMenu() {
     const projectsListDiv = document.getElementById("projects-list");
@@ -146,7 +152,7 @@ function generateProjectPage(event) {
     event.stopPropagation();
     const selectedProject = event.currentTarget;
 
-    setPage(event.target.id)
+    setPage(event.target.id);
     deletePage();
     unsetButtonsInMenuActive();
     setButtonInMenuActive(selectedProject);
