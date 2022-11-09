@@ -1,21 +1,20 @@
-import { myToDoList, setButtonInMenuActive, deletePage, generatePageHeader, 
-    unsetButtonsInMenuActive, generateTasksWrapperDiv, setPage, renderTasks, generateButtonAddNewTask } from "./inbox";
+import * as inbox from "./inbox";
 
 const buttonToday = document.getElementById("today-div");
-
-buttonToday.addEventListener("click", function() {
-    setPage("Today");
-    generateTodayPage();
-})
 
 function generateTodayPage() {
     const buttonToday = document.getElementById("today-div");
 
-    unsetButtonsInMenuActive();
-    setButtonInMenuActive(buttonToday);
-    deletePage();
-    generatePageHeader();
-    generateTasksWrapperDiv();
-    generateButtonAddNewTask();
-    renderTasks();
+    inbox.unsetButtonsInMenuActive();
+    inbox.setButtonInMenuActive(buttonToday);
+    inbox.deletePage();
+    inbox.generatePageHeader();
+    inbox.generateTasksWrapperDiv();
+    inbox.generateButtonAddNewTask();
+    inbox.renderTasks();
 }
+
+buttonToday.addEventListener("click", () => {
+    inbox.setPage("Today");
+    generateTodayPage();
+});

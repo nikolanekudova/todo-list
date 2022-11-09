@@ -1,6 +1,16 @@
+import {
+    setButtonInMenuActive,
+    deletePage,
+    generatePageHeader,
+    unsetButtonsInMenuActive,
+    generateTasksWrapperDiv,
+    setPage,
+    renderTasks,
+    generateButtonAddNewTask,
+    deleteToDoWithProject,
+} from "./inbox";
+
 export let myProjects = ["Home"];
-import { myToDoList, setButtonInMenuActive, deletePage, generatePageHeader, 
-    unsetButtonsInMenuActive, generateTasksWrapperDiv, setPage, renderTasks, generateButtonAddNewTask, deleteToDoWithProject } from "./inbox";
 
 const addProjectButton = document.getElementById("btn-add-project");
 addProjectButton.addEventListener("click", showInputAddProject);
@@ -51,8 +61,8 @@ export function generateInputAddProject() {
     buttonAddProject.addEventListener("click", addNewProject);
     buttonCancelAddProject.addEventListener("click", cancelAddingProject);
     // klávesa enter > nový projekt
-    addProjectInput.addEventListener("keyup", function (event) {
-        if (event.code === 'Enter') {
+    addProjectInput.addEventListener("keyup", (event) => {
+        if (event.code === "Enter") {
             addNewProject();
         }
     });
@@ -81,7 +91,6 @@ function addNewProject() {
     addNewProjectInputWrapper.style.display = "none";
 }
 
-
 function cancelAddingProject() {
     const addProjectDiv = document.getElementById("add-project");
 
@@ -97,7 +106,7 @@ function showProjectsInMenu() {
 
         const divForProject = document.createElement("div");
         divForProject.setAttribute("class", "button-icon-wrapper");
-        divForProject.classList.add("project-wrapper")
+        divForProject.classList.add("project-wrapper");
         divForProject.setAttribute("id", idForProject);
         projectsListDiv.appendChild(divForProject);
 
@@ -123,7 +132,7 @@ function showProjectsInMenu() {
         divForLeftSideOfProject.appendChild(iconProjectDelete);
 
         divForProject.addEventListener("click", generateProjectPage);
-        divForLeftSideOfProject.addEventListener("click", deleteProject)
+        divForLeftSideOfProject.addEventListener("click", deleteProject);
     }
 }
 
@@ -131,7 +140,7 @@ function deleteProject(event) {
     event.stopPropagation();
     const projectToDelete = event.target.parentElement.parentElement.parentElement.id;
 
-    myProjects = myProjects.filter(project => project != projectToDelete);
+    myProjects = myProjects.filter((project) => project != projectToDelete);
     console.log(myProjects);
 
     projectsToStorage();

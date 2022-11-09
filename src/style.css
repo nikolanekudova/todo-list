@@ -4,7 +4,7 @@ body {
 
 #page {
     min-height: 100vh;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", sans-serif;
 }
 
 #header {
@@ -48,7 +48,6 @@ body {
     width: 60vw;
 }
 
-
 #footer {
     position: absolute;
     bottom: 0;
@@ -83,9 +82,9 @@ body {
     background-color: rgb(222, 198, 181);
 }
 
- .button-icon-wrapper .right-side-project {
+.button-icon-wrapper .right-side-project {
     pointer-events: none;
-} 
+}
 
 h2 {
     font-size: 22px;
@@ -198,7 +197,6 @@ h2 {
     padding: 8px 15px;
     margin: 8px 0;
     box-sizing: border-box;
-
 }
 
 .task-wrapper {
